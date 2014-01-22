@@ -3,5 +3,8 @@
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
+export HUBOT_JENKINS_URL="http://10.0.0.159:8080"
+export HUBOT_JENKINS_AUTH="abtbot:testmesideways"
+
 exec node_modules/.bin/hubot "$@"
 

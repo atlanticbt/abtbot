@@ -23,8 +23,8 @@
     "hubot": ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "hubot-hipchat": "~2.6.4",
-    "url": "",
-    "querystring": ""
+    "url": ">= 0.1",
+    "querystring": ">= 0.1"
   },
   "engines": {
     "node": ">= 0.8.x",
