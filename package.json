@@ -24,7 +24,9 @@
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "hubot-hipchat": "~2.6.4",
     "url": ">= 0.1",
-    "querystring": ">= 0.1"
+    "querystring": ">= 0.1",
+    "cheerio": "0.7.0",
+    "chess": ">= 0.1"
   },
   "engines": {
     "node": ">= 0.8.x",

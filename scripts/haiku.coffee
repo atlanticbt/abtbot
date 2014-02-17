@@ -19,9 +19,7 @@
 
 module.exports = (robot) ->
   robot.respond /haiku me(\s*)?$/i, (msg) ->
-    msg.send "Haikus are easy"
-    msg.send "But sometimes they don't make sense"
-    msg.send "Refrigerator"
+    msg.send "Haikus are easy\nBut sometimes they don't make sense\nRefrigerator"
 
   robot.hear /(.* )?tock (.*)/i, (msg) ->
     msg.send "Ready to hear your haiku"
