@@ -169,6 +169,7 @@ jenkinsList = (msg) ->
                 response += "[#{index + 1}] #{state} #{job.name}\n"
             msg.send response
           catch error
+            msg.send "Server responded: #{body}"
             msg.send error
 
 module.exports = (robot) ->
