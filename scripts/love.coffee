@@ -32,5 +32,5 @@ module.exports = (robot) ->
   listen = new RegExp("I love( you)? @?"+robot.name+"","i")
   robot.hear listen, (msg) ->
     love msg
-  robot.respond /I love you/, (msg) ->
+  robot.respond /I love you/i, (msg) ->
     love msg
