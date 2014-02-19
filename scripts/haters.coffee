@@ -42,9 +42,5 @@ hatin = (msg) ->
   msg.send msg.random haters
 
 module.exports = (robot) ->
-  robot.respond /haters/i, (msg) ->
-    hatin msg
-  robot.hear /haters gonna hate/i, (msg) ->
-    hatin msg
   robot.hear /(\s|^)hat(e|er|ers|in)($|\W)/i, (msg) ->
     hatin msg
