@@ -13,6 +13,7 @@
 #   johnf
 
 module.exports = (robot) ->
-  robot.router.post "/abt/room", (req, res) ->
-    robot.messageRoom req.params.room, req.params.message
+  robot.router.post "/abt/room/:room", (req, res) ->
+    data = JSON.parse req.body.payload
+    robot.messageRoom req.params.room, data.message
     res.end "Message Sent to #{req.body.room} #{req.params.room}"
