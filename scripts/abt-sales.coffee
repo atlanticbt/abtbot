@@ -14,5 +14,5 @@
 
 module.exports = (robot) ->
   robot.router.post "/abt/room", (req, res) ->
-    robot.messageRoom req.body.room, req.body.message
-    res.end "Message Sent to #{req.body.room}"
+    robot.messageRoom req.params.room, req.params.message
+    res.end "Message Sent to #{req.body.room} #{req.params.room}"
