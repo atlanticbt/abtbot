@@ -1,5 +1,5 @@
 # Description:
-#   Notify the sales room when a form is submitted on the ABT Website
+#   Notify the a room when a HTTP request is made
 #
 # Dependencies:
 #   None
@@ -13,6 +13,6 @@
 #   johnf
 
 module.exports = (robot) ->
-  robot.router.post "/abt/sales", (req, res) ->
-    robot.messageRoom "Dept:Sales", req.body.message
-    res.end "Message Sent"
+  robot.router.post "/abt/room", (req, res) ->
+    robot.messageRoom req.body.room, req.body.message
+    res.end "Message Sent to #{req.body.room}"
