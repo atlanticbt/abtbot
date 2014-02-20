@@ -14,6 +14,10 @@
 
 module.exports = (robot) ->
   robot.router.post "/abt/room", (req, res) ->
-#    data = JSON.parse req.body.payload
-#    robot.messageRoom data.room, data.message
-    res.end "RESPONSE: #{req.body} #{req.body.payload} #{req.params}"
+    try
+      if req.body.room?
+        robot.messageRoom req.body.room, req.body.message
+      res.end "RESPONSE: #{req.body.room} #{req.body.message}"
+    catch err
+      console.log err
+      robot.emit 'error', err
