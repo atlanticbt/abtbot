@@ -28,7 +28,7 @@ messages = [
 
 hair = (msg) ->
   pic = msg.random messages
-  msg.send "Speaking of hair: #{pic}"
+  msg.send "Speaking of: #{pic}"
 
 
 module.exports = (robot) ->
