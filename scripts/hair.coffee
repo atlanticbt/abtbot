@@ -32,5 +32,15 @@ hair = (msg) ->
 
 
 module.exports = (robot) ->
-  robot.hear /(\s|^)hair($|\W)/i, (msg) ->
+  robot.hear /(\s|^)hairs?($|\W)/i, (msg) ->
+    hair msg
+  robot.hear /(\s|^)beards?($|\W)/i, (msg) ->
+    hair msg
+  robot.hear /(\s|^)moustaches?($|\W)/i, (msg) ->
+    hair msg
+  robot.hear /(\s|^)mustaches?($|\W)/i, (msg) ->
+    hair msg
+  robot.hear /(\s|^)goatees?($|\W)/i, (msg) ->
+    hair msg
+  robot.hear /(\s|^)sideburns?($|\W)/i, (msg) ->
     hair msg
