@@ -109,21 +109,22 @@ module.exports = (robot) ->
     return "#{haiku.time}-#{haiku.user}"
 
   robot.respond /haiku me/i, (msg) ->
+    unless robot.brain.data.haikus && robot.brain.data.haikus.length > 0
+      msg.send "I don't have any Haikus to share. Write one for me to remember!"
+      return;
     haiku = msg.random robot.brain.data.haikus
-    console.log "HAIKU:", haiku
-    msg.send haiku.msg
-#    try
-#      t = new Date(haiku.time);
-#      time = t.toDateString()
-#    catch err
-#      time = 'Unknown date'
-#    id = getId haiku
-#    try
-#      user = robot.brain.userForId haiku.user
-#      userName = user.name
-#    catch err
-#      userName = 'Anonymous'
-#    msg.send "Haiku ##{id}\n#{haiku.msg}\n  -#{userName} on #{time}"
+    try
+      t = new Date(haiku.time);
+      time = t.toDateString()
+    catch err
+      time = 'Unknown date'
+    id = getId haiku
+    try
+      user = robot.brain.userForId haiku.user
+      userName = user.name
+    catch err
+      userName = 'Anonymous'
+    msg.send "Haiku ##{id}\n#{haiku.msg}\n  -#{userName} on #{time}"
   robot.respond /haiku write(.*)?/i, (msg) ->
     startHaiku msg
   robot.respond /haiku save/i, (msg) ->
