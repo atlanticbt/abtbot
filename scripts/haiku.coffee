@@ -38,7 +38,7 @@ module.exports = (robot) ->
 
   removeListener = (listener) ->
     if (!listener)
-      console.log "listener wasn't anything", listener
+      # console.log "listener wasn't anything", listener
       return
 
     listenerIndex = -1
@@ -46,10 +46,10 @@ module.exports = (robot) ->
       if list is listener
         listenerIndex = i
         break
-    console.log "Listner index: #{listenerIndex}"
+    # console.log "Listner index: #{listenerIndex}"
     if (listenerIndex >= 0)
       setTimeout ->
-        console.log "Spliced"
+        # console.log "Spliced"
         robot.listeners.splice(listenerIndex, 1)
       , 0
     listener = null
@@ -104,9 +104,14 @@ module.exports = (robot) ->
     removeListener haikus[caughtRoomId][caughtUserId].listener
     haikus[caughtRoomId][caughtUserId] = null
 
+  getId = (haiku) ->
+    return false unless haiku.user && haiku.time
+    return "#{haiku.time}-#{haiku.user}"
+
   robot.respond /haiku me(\s*)?$/i, (msg) ->
     haiku = msg.random robot.brain.data.haikus
-    msg.send haiku.msg
+    time = new Date(haiku.time);
+    msg.send "Haiku ##{getId haiku}\n#{haiku.msg}\n  -#{(robot.brain.userForId haiku.user).name} on #{time.toDateString()}"
   robot.respond /haiku write(.*)?/i, (msg) ->
     startHaiku msg
   robot.respond /haiku save/i, (msg) ->
@@ -115,3 +120,12 @@ module.exports = (robot) ->
   robot.respond /haiku erase/i, (msg) ->
     clearHaiku msg
     msg.send "I've forgotten your haiku"
+  robot.respond /haiku delete #?(\d+\-\d+)/i, (msg) ->
+    console.log "Looking for haiku id: #{msg.match[1]}"
+    for haiku, index in robot.brain.data.haikus
+      console.log "Inspecting haiku: #{getId haiku}"
+      if msg.match[1] == getId haiku
+        robot.brain.data.haikus.splice(index, 1);
+        msg.send "Haiku has been deleted."
+        return;
+    msg.send "Unable to find haiku with id #{msg.match[1]}"
