@@ -7,8 +7,6 @@ export HUBOT_JENKINS_URL="http://jenkins.atlanticbt.com"
 export HUBOT_JENKINS_AUTH="abtbot:testmesideways"
 
 export HUBOT_TUMBLR_API_KEY="BrvDExkeigSvifB9Ua0819pOIYoXXctoCOuLxiwx9qAWzGFJXb"
-export HUBOT_AUTH_ADMIN="1"
-
 
 export HUBOT_REDMINE_SSL=1
 export HUBOT_REDMINE_BASE_URL="redmine02.atlanticbt.com"
