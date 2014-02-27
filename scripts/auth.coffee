@@ -9,10 +9,10 @@
 #   HUBOT_AUTH_ADMIN - A comma separate list of user IDs
 #
 # Commands:
-#   hubot <user> has <role> role - Assigns a role to a user
-#   hubot <user> doesn't have <role> role - Removes a role from a user
-#   hubot what role does <user> have - Find out what roles are assigned to a specific user
-#   hubot who has admin role - Find out who's an admin and can assign roles
+#   hubot assign <user> to role <role> - Assigns a role to a user
+#   hubot unassign <user> to role <role> - Removes a role from a user
+#   hubot auth <user> - Find out what roles are assigned to a specific user
+#   hubot who are admins - Find out who is an admin
 #
 # Notes:
 #   * Call the method: robot.auth.hasRole(msg.envelope.user,'<role>')
@@ -26,7 +26,7 @@
 #     a user
 #
 # Author:
-#   alexwilliamsca, tombell
+#   jfoushee
 
 module.exports = (robot) ->
 
@@ -56,65 +56,62 @@ module.exports = (robot) ->
 
   robot.auth = new Auth
 
-  robot.respond /@?(.+) (has) (["'\w: -_]+) (role)/i, (msg) ->
-    name    = msg.match[1].trim()
-    newRole = msg.match[3].trim().toLowerCase()
+  find = (username, msg) ->
+    if username.length < 1
+      msg.send "Please specify a user"
+      return;
+    users = robot.brain.usersForFuzzyName username
+    if users.length < 1
+      msg.send "No users #{username} were found"
+      return
+    if users.length != 1
+      msg.send "Multiple users found: #{users.length}"
+      return
+    users[0]
 
-    unless name.toLowerCase() in ['', 'who', 'what', 'where', 'when', 'why']
-      user = robot.brain.userForName(name)
-      return msg.reply "#{name} does not exist" unless user?
-      user.roles or= []
 
-      if newRole in user.roles
-        msg.reply "#{name} already has the '#{newRole}' role."
+  robot.respond /assign\s+@?(.+) to role\s+(.+)/i, (msg) ->
+    username = msg.match[1].trim()
+    role = msg.match[2].trim().toLowerCase()
+    user = find username, msg
+    # ready to assign role
+    user.roles ?= []
+    if role in user.roles
+      msg.reply "#{username} already has the role '#{role}"
+    else
+      if role == 'admin'
+        msg.reply "Admin is a reserved role"
       else
-        if newRole is 'admin'
-          msg.reply "Sorry, the 'admin' role can only be defined in the HUBOT_AUTH_ADMIN env variable."
+        if msg.message.user.id in admins || msg.message.user.name in admins
+          user.roles.push role
+          msg.reply "#{username} has now been assigned the #{role} role"
         else
-          myRoles = msg.message.user.roles or []
-          if msg.message.user.id.toString() in admins
-            user.roles.push(newRole)
-            msg.reply "Ok, #{name} has the '#{newRole}' role."
+          msg.reply "You do not have the power to assign roles"
 
-  robot.respond /@?(.+) (doesn't have|does not have) (["'\w: -_]+) (role)/i, (msg) ->
-    name    = msg.match[1].trim()
-    newRole = msg.match[3].trim().toLowerCase()
-
-    unless name.toLowerCase() in ['', 'who', 'what', 'where', 'when', 'why']
-      user = robot.brain.userForName(name)
-      return msg.reply "#{name} does not exist" unless user?
-      user.roles or= []
-
-      if newRole is 'admin'
-        msg.reply "Sorry, the 'admin' role can only be removed from the HUBOT_AUTH_ADMIN env variable."
-      else
-        myRoles = msg.message.user.roles or []
-        if msg.message.user.id.toString() in admins
-          user.roles = (role for role in user.roles when role isnt newRole)
-          msg.reply "Ok, #{name} doesn't have the '#{newRole}' role."
-
-  robot.respond /(what role does|what roles does) @?(.+) (have)\?*$/i, (msg) ->
-    name = msg.match[2].trim()
-    user = robot.brain.userForName(name)
-    return msg.reply "#{name} does not exist" unless user?
-    user.roles or= []
-    displayRoles = user.roles
-
-    if user.id.toString() in admins
-      displayRoles.push('admin')
-
-    if displayRoles.length == 0
-      msg.reply "#{name} has no roles."
+  robot.respond /unassign\s+@?(.+) to role\s+(.+)/i, (msg) ->
+    username = msg.match[1].trim()
+    role = msg.match[2].trim().toLowerCase()
+    user = find username, msg
+    user.roles ?= []
+    if role == 'admin'
+      msg.reply "#{role} cannot be unassigned"
+      return
+    unless msg.message.user.id in admins || msg.message.user.name in admins
+      msg.reply "You cannot unassign roles"
+    for userrole,index in user.roles
+      if userrole is role
+        user.roles.splice index,1
+        msg.reply "#{user.name} no longer has role #{role}"
+        return;
+    msg.reply "#{user.name} does not have role #{role}"
+  robot.respond /roles for\s+(.+)/i, (msg) ->
+    username = msg.match[1].trim()
+    user = find username, msg
+    user.roles ?= []
+    if user.roles.length < 1
+      msg.send "#{username} has no roles"
     else
-      msg.reply "#{name} has the following roles: #{displayRoles.join(', ')}."
+      msg.send "#{username} has the following roles: #{user.roles.join ', '}"
 
-  robot.respond /who has admin role\?*$/i, (msg) ->
-    adminNames = []
-    for admin in admins
-      user = robot.brain.userForId(admin)
-      adminNames.push user.name if user?
-
-    if adminNames.length > 0
-      msg.reply "The following people have the 'admin' role: #{adminNames.join(', ')}"
-    else
-      msg.reply "There are no people that have the 'admin' role."
+  robot.respond /who are admins/i, (msg) ->
+    msg.send "Admins: #{admins}"

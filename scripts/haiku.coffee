@@ -8,8 +8,8 @@
 #   None
 #
 # Commands:
-#   @abtbot haiku me - Return a random haiku
-#   @abtbot haiku write - starts listening for you to write a haiku.
+#   hubot haiku me - Return a random haiku
+#   hubot haiku write - starts listening for you to write a haiku.
 #
 # Notes:
 #   None
