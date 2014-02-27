@@ -67,9 +67,9 @@ module.exports = (robot) ->
     msg.reply "Don't forget to resume monitoring for this service."
 
   robot.respond /announce list/i, (msg) ->
-    unless (authorize msg)
-      msg.reply "You do not have announce permission"
-      return
+#    unless (authorize msg)
+#      msg.reply "You do not have announce permission"
+#      return
     users = robot.brain.users()
     list = []
     for id of users
