@@ -3,14 +3,5 @@
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
-export HUBOT_JENKINS_URL="http://jenkins.atlanticbt.com"
-export HUBOT_JENKINS_AUTH="abtbot:testmesideways"
-
-export HUBOT_TUMBLR_API_KEY="BrvDExkeigSvifB9Ua0819pOIYoXXctoCOuLxiwx9qAWzGFJXb"
-
-export HUBOT_REDMINE_SSL=1
-export HUBOT_REDMINE_BASE_URL="redmine02.atlanticbt.com"
-export HUBOT_REDMINE_TOKEN="a5e6f649cfe0d09105b8aa21c682d675a21628db"
-
 exec node_modules/.bin/hubot "$@"
 
