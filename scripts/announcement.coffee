@@ -39,14 +39,15 @@ module.exports = (robot) ->
 
   robot.respond /announce "(.*)"/i, (msg) ->
     unless (authorize msg)
-      msg.respond "You do not have announce permission"
+      msg.reply "You do not have announce permission"
       return
-    announcement = msg.match[1]
+    msg.reply "Alright, I will announce: #{msg.match[1]}"
+    announcement = "#{msg.message.user.name} wants to announce: #{msg.match[1]}"
     announceMessage announcement
 
   robot.respond /announce downtime for "(.*)" starting (.*)/i, (msg) ->
     unless (authorize msg)
-      msg.respond "You do not have announce permission"
+      msg.reply "You do not have announce permission"
       return
     user = msg.message.user
     service = msg.match[1]
@@ -60,7 +61,7 @@ module.exports = (robot) ->
 
   robot.respond /announce downtime complete for "(.*)"/i, (msg) ->
     unless (authorize msg)
-      msg.respond "You do not have announce permission"
+      msg.reply "You do not have announce permission"
       return
     service = msg.match[1]
     announceMessage "Maintenance for the '#{service}' service is complete."
