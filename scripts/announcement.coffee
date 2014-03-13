@@ -23,6 +23,7 @@ module.exports = (robot) ->
 
   announceMessage = (message) ->
     users = robot.brain.users()
+    message.envelope.user.type = 'direct'
     for id of users
       try
         robot.send users[id], message
