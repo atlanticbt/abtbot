@@ -23,7 +23,6 @@ module.exports = (robot) ->
 
   announceMessage = (message) ->
     users = robot.brain.users()
-    message.envelope.user.type = 'direct'
     for id of users
       try
         robot.send users[id], message
@@ -77,3 +76,13 @@ module.exports = (robot) ->
     for id of users
       list.push users[id].name
     msg.send "An announcement will go to the following users: #{list.join '\n'}"
+
+  robot.respond /announce details/i, (msg) ->
+    if robot.auth.hasRole msg.message.user, 'announce'
+      msg.send "Here are user details"
+      users = robot.brain.users()
+      for id of users
+        msg.send "User: #{id}"
+        for key,value of users
+          msg.send "  ATTR: #{key} => #{value}"
+        break
