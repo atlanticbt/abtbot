@@ -18,29 +18,10 @@
 #
 # URLS:
 #   /broadcast/create - Send a message to designated, comma-separated rooms.
+errmsg = (err) ->
+  err + (if err.stack then '\n' + err.stack else '')
 
 module.exports = (robot) ->
-  clone = (obj) ->
-    if not obj? or typeof obj isnt 'object'
-      return obj
-
-    if obj instanceof Date
-      return new Date(obj.getTime())
-
-    if obj instanceof RegExp
-      flags = ''
-      flags += 'g' if obj.global?
-      flags += 'i' if obj.ignoreCase?
-      flags += 'm' if obj.multiline?
-      flags += 'y' if obj.sticky?
-      return new RegExp(obj.source, flags)
-
-    newInstance = new obj.constructor()
-
-    for key of obj
-      newInstance[key] = clone obj[key]
-
-    return newInstance
   expressObject = (obj, indent) ->
     if typeof obj == 'object'
       str = ''
@@ -58,10 +39,13 @@ module.exports = (robot) ->
     users = robot.brain.users()
     for id,user of users
       try
-        u = clone user
-        u.reply_to = u.jid if robot.adapter is "hipchat"
-        robot.send u, message
+        if user.jid
+          robot.logger.info "Sending announcement to #{user.jid}"
+          robot.send {jid: user.jid}, message
+        else
+          robot.logger.error "Unable to send message to #{user.name}. Missing Jabber ID"
       catch err
+        robot.logger.error "Announce error: #{errmsg err}"
         console.log err
 
   authorize = (msg) ->
