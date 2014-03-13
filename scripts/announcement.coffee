@@ -20,9 +20,28 @@
 #   /broadcast/create - Send a message to designated, comma-separated rooms.
 
 module.exports = (robot) ->
+  clone = (obj) ->
+    if not obj? or typeof obj isnt 'object'
+      return obj
 
+    if obj instanceof Date
+      return new Date(obj.getTime())
+
+    if obj instanceof RegExp
+      flags = ''
+      flags += 'g' if obj.global?
+      flags += 'i' if obj.ignoreCase?
+      flags += 'm' if obj.multiline?
+      flags += 'y' if obj.sticky?
+      return new RegExp(obj.source, flags)
+
+    newInstance = new obj.constructor()
+
+    for key of obj
+      newInstance[key] = clone obj[key]
+
+    return newInstance
   expressObject = (obj, indent) ->
-    console.log (typeof obj)
     if typeof obj == 'object'
       str = ''
       for k,v of obj
@@ -37,9 +56,11 @@ module.exports = (robot) ->
 
   announceMessage = (message) ->
     users = robot.brain.users()
-    for id of users
+    for id,user of users
       try
-        robot.send users[id], message
+        u = clone user
+        u.reply_to = u.jid if robot.adapter is "hipchat"
+        robot.send u, message
       catch err
         console.log err
 
