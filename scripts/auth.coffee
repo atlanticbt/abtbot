@@ -56,20 +56,6 @@ module.exports = (robot) ->
 
   robot.auth = new Auth
 
-  for role,users of {announce: ['Doug Eubanks','Matt Lemke','Jennifer Reaves']}
-    robot.logger.info "Configuring role: #{role}"
-    for userName in users
-      robot.logger.info "Attempting to add #{userName} to #{role}"
-      user = robot.brain.usersForFuzzyName userName
-      unless user.length == 1
-        robot.logger.error "Found #{user.length} users by #{userName}"
-        continue;
-      user = user[0];
-      user.roles ?= []
-      unless robot.auth.hasRole user,role
-        user.roles.push role
-        robot.logger.info "#{userName} now has role #{role}"
-
   find = (username, msg) ->
     if username.length < 1
       msg.send "Please specify a user"

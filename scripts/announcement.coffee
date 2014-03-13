@@ -21,6 +21,7 @@
 errmsg = (err) ->
   err + (if err.stack then '\n' + err.stack else '')
 
+prepopulated = false
 module.exports = (robot) ->
   expressObject = (obj, indent) ->
     if typeof obj == 'object'
@@ -49,11 +50,30 @@ module.exports = (robot) ->
         console.log err
 
   authorize = (msg) ->
+    prepopulate()
     try
       return robot.auth.hasRole msg.message.user, 'announce'
     catch err
       console.log err
     return false
+
+  prepopulate = () ->
+    if prepopulated
+      return
+    prepopulated = true
+    for role,users of {announce: ['Doug Eubanks','Matt Lemke','Jennifer Reaves']}
+      robot.logger.info "Configuring role: #{role}"
+      for userName in users
+        robot.logger.info "Attempting to add #{userName} to #{role}"
+        user = robot.brain.usersForFuzzyName userName
+        unless user.length == 1
+          robot.logger.error "Found #{user.length} users by #{userName}"
+          continue;
+        user = user[0];
+        user.roles ?= []
+        unless robot.auth.hasRole user,role
+          user.roles.push role
+          robot.logger.info "#{userName} now has role #{role}"
 
 
   robot.respond /announce "(.*)"/i, (msg) ->
