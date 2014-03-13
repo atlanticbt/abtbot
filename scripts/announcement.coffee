@@ -21,6 +21,20 @@
 
 module.exports = (robot) ->
 
+  expressObject = (obj, indent) ->
+    console.log (typeof obj)
+    if typeof obj == 'object'
+      str = ''
+      for k,v of obj
+        str += "#{indent}[#{k}] => #{expressObject v,indent+'  '},\n"
+      return str
+    if typeof obj == 'array'
+      str = ''
+      for i in obj
+        str += "#{indent}[#{i}] => #{expressObject obj[i],indent+'  '},\n"
+      return str
+    return obj
+
   announceMessage = (message) ->
     users = robot.brain.users()
     for id of users
@@ -81,8 +95,6 @@ module.exports = (robot) ->
     if robot.auth.hasRole msg.message.user, 'announce'
       msg.send "Here are user details"
       users = robot.brain.users()
-      for id of users
-        msg.send "User: #{id}"
-        for key,value of users
-          msg.send "  ATTR: #{key} => #{value}"
+      for id,user of users
+        msg.send "User: #{id} #{expressObject user,''}"
         break
