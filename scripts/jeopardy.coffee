@@ -14,10 +14,10 @@
 #   jfoushee
 
 
-oneMoment = (msg) ->
-  msg.send "/me plays Jeopardy music quietly"
 
 module.exports = (robot) ->
+  oneMoment = (msg) ->
+    msg.send "/me plays Jeopardy music quietly"
   robot.hear /(\s|^)(hang|hold) on($|\W)/i, (msg) ->
     oneMoment msg
   robot.hear /(\s|^)(give me|gimme) (a|1|one) (sec|moment|second)($|\W)/i, (msg) ->
