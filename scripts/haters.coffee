@@ -11,7 +11,7 @@
 #   haters - Returns a random haters gonna hate url
 #
 # Author:
-#   atmos
+#   johnf
 
 haters = [
   "http://jesad.com/img/life/haters-gonna-hate/haters-gonna-hate01.jpg"
