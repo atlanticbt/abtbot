@@ -19,7 +19,7 @@ squee = (msg) ->
   msg.send "WES WE CAN! WES WE CAN!"
 
 module.exports = (robot) ->
-  robot.hear /(\#|\s|^)squee($|\W)/i, (msg) ->
+  robot.hear /(\#|\s|^)squee+($|\W)/i, (msg) ->
     squee msg
   robot.hear /(\#|\s|^)weswecan($|\W)/i, (msg) ->
     squee msg
